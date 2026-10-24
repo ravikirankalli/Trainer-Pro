@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../auth/auth_service.dart';
 import '../auth/login_screen.dart';
+import '../dashboard/dashboard_screen.dart';
 
 /// Opening screen: centred Trainer Pro logo with the trust byline beneath it.
 class SplashScreen extends StatefulWidget {
@@ -36,15 +38,18 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     _controller.forward();
-    _timer = Timer(const Duration(milliseconds: 2800), _goToLogin);
+    _timer = Timer(const Duration(milliseconds: 2800), _goToNextScreen);
   }
 
-  void _goToLogin() {
+  /// A trainer who is still signed in goes straight to the dashboard.
+  Future<void> _goToNextScreen() async {
+    final loggedIn = await AuthService.isLoggedIn();
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 450),
-        pageBuilder: (_, _, _) => const LoginScreen(),
+        pageBuilder: (_, _, _) =>
+            loggedIn ? const DashboardScreen() : const LoginScreen(),
         transitionsBuilder: (_, animation, _, child) =>
             FadeTransition(opacity: animation, child: child),
       ),

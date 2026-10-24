@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../dashboard/dashboard_screen.dart';
 import 'auth_service.dart';
 import 'widgets/brand_wave.dart';
 import 'widgets/trust_branding.dart';
@@ -50,13 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isSubmitting = false);
 
     if (result.success) {
-      // The authenticated area is built in a later milestone; until then the
-      // session is stored and the trainer is greeted here.
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Welcome, ${result.trainer?.name ?? 'Trainer'}'),
-          backgroundColor: AppColors.navy,
-        ),
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const DashboardScreen()),
       );
       return;
     }
