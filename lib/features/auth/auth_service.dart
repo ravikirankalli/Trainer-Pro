@@ -137,6 +137,21 @@ class AuthService {
     }
   }
 
+  /// The trainer's full profile, including the schools they are allocated to.
+  /// Returns null when the call fails.
+  Future<Map<String, dynamic>?> fetchProfile() async {
+    try {
+      final response = await apiClient
+          .get(Uri.parse('${ApiConfig.baseUrl}${ApiConfig.profilePath}'))
+          .timeout(ApiConfig.timeout);
+
+      if (response.statusCode != 200) return null;
+      return _decode(response.body);
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> logout() async {
     try {
       await apiClient

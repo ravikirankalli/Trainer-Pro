@@ -5,11 +5,14 @@ import 'package:flutter/foundation.dart'
 class ApiConfig {
   ApiConfig._();
 
-  /// Override at build time:
-  /// `flutter run --dart-define=API_BASE_URL=https://api.example.com/api`
+  /// Override at build time, e.g. to point at a local backend:
+  /// `flutter run --dart-define=API_BASE_URL=http://10.0.2.2/school_pro/public/api`
+  ///
+  /// Defaults to the hosted backend so a device build works out of the box,
+  /// matching School Pro, Student Pro, Compete Pro and Diet Pro.
   static const String _configured = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2/school_pro/public/api',
+    defaultValue: 'https://coral-cassowary-543563.hostingersite.com/api',
   );
 
   /// 10.0.2.2 only resolves inside the Android emulator; every other platform
@@ -31,4 +34,5 @@ class ApiConfig {
   static const String refreshTokenPath = '/refresh-token';
   static const String logoutPath = '/logout';
   static const String forgotPasswordPath = '/forgot-password';
+  static const String profilePath = '/trainer/profile';
 }
