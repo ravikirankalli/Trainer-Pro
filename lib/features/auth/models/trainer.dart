@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 /// The authenticated trainer, as returned by the `/login` endpoint.
 class Trainer {
   const Trainer({
@@ -27,6 +29,19 @@ class Trainer {
     );
   }
 
+  /// Rebuilds the trainer from the session persisted at login, so screens
+  /// opened after a restart do not have to call the backend again.
+  factory Trainer.fromStorage(SharedPreferences prefs) {
+    return Trainer(
+      id: prefs.getString(AuthStorageKeys.trainerId) ?? '',
+      name: prefs.getString(AuthStorageKeys.trainerName) ?? '',
+      email: prefs.getString(AuthStorageKeys.trainerEmail) ?? '',
+      role: prefs.getString(AuthStorageKeys.trainerRole) ?? '',
+      trainerId: prefs.getString(AuthStorageKeys.trainerCode),
+      schoolId: prefs.getString(AuthStorageKeys.schoolId),
+    );
+  }
+
   Map<String, String> toStorageMap() => {
         AuthStorageKeys.trainerId: id,
         AuthStorageKeys.trainerName: name,
@@ -35,6 +50,15 @@ class Trainer {
         AuthStorageKeys.trainerCode: trainerId ?? '',
         AuthStorageKeys.schoolId: schoolId ?? '',
       };
+
+  /// Shown on the dashboard until the backend serves a profile photograph.
+  String get initials {
+    final parts =
+        name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    if (parts.isEmpty) return '?';
+    if (parts.length == 1) return parts.first[0].toUpperCase();
+    return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+  }
 }
 
 /// Keys used for the locally persisted session.
